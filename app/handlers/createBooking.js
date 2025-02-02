@@ -5,7 +5,7 @@ import { Client, Environment } from 'square';
 
 const squareClient = new Client({
   bearerAuthCredentials: {
-    accessToken: 'EAAAl1ObzCX7S9AkD193gc2B_UymC23Wg1t7Q6zp0x9OgUVWGa7W_hAc3lIwci_n',
+    accessToken: process.env.ACCESS_TOKEN,
   },
   environment: Environment.Sandbox,
 });
@@ -17,18 +17,34 @@ const sanitizeResponse = (response) => {
     startAt: response.booking?.startAt,
     locationId: response.booking?.locationId,
     status: response.booking?.status,
+    customerId: response.booking?.customerId,
   };
 };
 
+//Note to self. To properly book an appointment, you need provide Booking.location_id, Booking.start_at,
+//Booking.AppointmentSegment.service_id, Booking.AppointmentSegment.team_member_id and Booking.AppointmentSegment.service_variation_id
+//Booking.AppointmentSegment.service_variation_version and also customerID
+
+// Create a booking using the Square API
+//
 export const createBooking = async (bookingData) => {
   try {
-    const { startAt, locationId } = bookingData;
+    const { startAt, locationId, customerId } = bookingData;
 
     const response = await squareClient.bookingsApi.createBooking({
       idempotencyKey: crypto.randomUUID(),
       booking: {
         startAt,
         locationId,
+        customerId,
+
+        appointmentSegments: [
+          {
+            teamMemberId: "TMGq_P1NxTHPyQ3J",
+            serviceVariationId: "7WGNX3PET3F6GIZYDZRFOCUX",
+            serviceVariationVersion: '1736791154230'
+          }
+        ]
       },
     });
 

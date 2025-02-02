@@ -8,7 +8,10 @@ export default function Calendar() {
   const calendarRef = useRef(null);
   const flatpickrInstance = useRef(null);
 
+  //Initialize the flatpickr instance with useEffect
   useEffect(() => {
+    // Initialize the flatpickr instance
+    //Saves the state of the calendar being used on frontend
     if (calendarRef.current) {
       flatpickrInstance.current = flatpickr(calendarRef.current, {
         defaultDate: new Date(),
@@ -39,6 +42,8 @@ export default function Calendar() {
         const response = await createBooking({
           startAt: startAt,
           locationId: 'LY2QRHG0Q0XZ7',
+          customerId: 'TEYNMSR2HNXZPTG32WK85FP48W',
+
         });
 
         if (response.success) {

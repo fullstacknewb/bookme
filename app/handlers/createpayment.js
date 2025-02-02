@@ -3,11 +3,12 @@ import { Client } from "square";
 import { randomUUID } from "crypto";
 
 const { paymentsApi } = new Client({
-  accessToken: 'EAAAl1ObzCX7S9AkD193gc2B_UymC23Wg1t7Q6zp0x9OgUVWGa7W_hAc3lIwci_n',
+  accessToken: process.env.ACCESS_TOKEN,
   environment: "sandbox",
 });
 
 export async function submitPayment(sourceID) {
+  console.log(process.env.ACCESS_TOKEN);
   try {
     const { result } = await paymentsApi.createPayment({
       idempotencyKey: crypto.randomUUID(),
@@ -17,6 +18,10 @@ export async function submitPayment(sourceID) {
         amount: 3000,
       },
     });
+
+    if(result.payment.status === 'COMPLETED'){
+      
+    }
     return result;
   } catch (error) {
     console.log(error);
